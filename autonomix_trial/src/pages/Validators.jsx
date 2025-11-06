@@ -23,6 +23,8 @@ export default function Validators() {
   const [balance, setBalance] = useState(0n);
   const [electionTxHash, setElectionTxHash] = useState("");
   const [rewardsTxHash, setRewardsTxHash] = useState("");
+  const [approveTxHash, setApproveTxHash] = useState("");
+  const [stakeTxHash, setStakeTxHash] = useState("");
 
   const { signer, provider, contracts, connectWallet, wallet } = useWallet();
 
@@ -160,11 +162,18 @@ export default function Validators() {
       // The stake function in AutonomixDPoS.sol takes _delegate and _amount
       // We'll use the connected account as the delegate for simplicity here.
       const tx = await contracts.dpos.stake(userAddr, amountInUnits);
+      setStakeTxHash(tx.hash);
       await tx.wait();
 
+      // Refresh balance and allowance after staking
+      const updatedAllowance = await autoxTokenContractInstance.allowance(userAddr, contracts.dpos.target);
+      const updatedBalance = await autoxTokenContractInstance.balanceOf(userAddr);
+      setAllowance(updatedAllowance);
+      setBalance(updatedBalance);
+
       setMessage(`Successfully staked ${stakeAmount} tokens!`);
-      setStakeAmount(""); // Clear input after staking
-      loadValidators(); // Refresh validator list
+      setStakeAmount("");
+      loadValidators();
     } catch (err) {
       console.error("Error staking tokens:", err);
       setMessage("Error staking tokens (check console).");
@@ -181,12 +190,27 @@ export default function Validators() {
       const amountToApprove = ethers.parseUnits(approvedAmount, tokenDecimals);
       console.log("Approving DPoS contract at address:", contracts.dpos.target);
       const tx = await autoxTokenContractInstance.connect(signer).approve(contracts.dpos.target, amountToApprove);
+      setApproveTxHash(tx.hash);
       await tx.wait();
       const userAddr = await signer.getAddress();
       const newAllowance = await autoxTokenContractInstance.allowance(userAddr, contracts.dpos.target);
+      const newBalance = await autoxTokenContractInstance.balanceOf(userAddr);
       setAllowance(newAllowance);
+      setBalance(newBalance);
       console.log("Tokens approved successfully!");
-      setMessage("Tokens approved successfully!");
+      try {
+        const candidateAddr = connectedAddress || userAddr;
+        if (contracts?.dpos?.registerCandidate) {
+          const rcTx = await contracts.dpos.registerCandidate(candidateAddr);
+          await rcTx.wait();
+          setMessage("Tokens approved and candidate registered!");
+        } else {
+          setMessage("Tokens approved successfully!");
+        }
+      } catch (regErr) {
+        console.warn("registerCandidate call failed or not available:", regErr);
+        setMessage("Tokens approved successfully!");
+      }
     } catch (error) {
       console.error("Error approving tokens:", error);
       setMessage(`Error approving tokens: ${error.message}`);
@@ -458,6 +482,20 @@ export default function Validators() {
           <div className="bg-white bg-opacity-70 backdrop-blur-lg p-6 rounded-xl shadow-lg mb-8">
             <h2 className="text-2xl font-semibold text-blush mb-4">Recent Contract Actions</h2>
             <div className="space-y-2 text-violet">
+              <p><span className="font-semibold">Approve Tx:</span> {approveTxHash ? (
+                <a href={`https://sepolia.etherscan.io/tx/${approveTxHash}`} target="_blank" rel="noopener noreferrer" className="text-blush underline">
+                  {approveTxHash.slice(0, 10)}...{approveTxHash.slice(-8)}
+                </a>
+              ) : (
+                "\u2014"
+              )}</p>
+              <p><span className="font-semibold">Stake Tx:</span> {stakeTxHash ? (
+                <a href={`https://sepolia.etherscan.io/tx/${stakeTxHash}`} target="_blank" rel="noopener noreferrer" className="text-blush underline">
+                  {stakeTxHash.slice(0, 10)}...{stakeTxHash.slice(-8)}
+                </a>
+              ) : (
+                "\u2014"
+              )}</p>
               <p><span className="font-semibold">Election Tx:</span> {electionTxHash ? (
                 <a href={`https://sepolia.etherscan.io/tx/${electionTxHash}`} target="_blank" rel="noopener noreferrer" className="text-blush underline">
                   {electionTxHash.slice(0, 10)}...{electionTxHash.slice(-8)}
