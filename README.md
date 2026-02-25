@@ -40,68 +40,22 @@ Autonomix is a comprehensive blockchain project that demonstrates a Delegated Pr
 * **MetaMask:** Install the browser extension from [https://metamask.io/](https://metamask.io/)
 * **Git:** Download and install from [https://git-scm.com/](https://git-scm.com/)
 
-### Installation
+### Analyzing the Bundle Size
 
-1. **Clone the repository:**
+This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
 
-   ```bash
-   git clone <your-repository-url>
-   cd <your-project-directory>
-   ```
+### Making a Progressive Web App
 
-2. **Install contract dependencies:**
+This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
 
-   ```bash
-   cd autonomix-contracts
-   npm install
-   ```
+### Advanced Configuration
 
-3. **Install frontend dependencies:**
+This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
 
-   ```bash
-   cd ../autonomix_trial
-   npm install
-   ```
+### Deployment
 
-### Running the Project
+This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
 
-1. **Deploy the smart contracts:**
+### `npm run build` fails to minify
 
-   * Navigate to the `autonomix-contracts` directory.
-   * Configure your `hardhat.config.js` with your network and private keys.
-   * Run the deployment script:
-
-     ```bash
-     npx hardhat run scripts/deploy.js --network <your-network>
-     ```
-
-2. **Start the frontend application:**
-
-   * Navigate to the `autonomix_trial` directory.
-   * Start the React development server:
-
-     ```bash
-     npm start
-     ```
-   * The application will be available at `http://localhost:3000`.
-
-## Usage
-
-The `DEMO_GUIDE_FOR_FACULTY.md` file provides a detailed, step-by-step guide on how to use the application and demonstrate its features. This includes:
-
-* Setting up multiple validator accounts in MetaMask.
-* Funding accounts with test ETH and approving tokens.
-* Staking tokens on validator candidates.
-* Electing validators.
-* Submitting and verifying data.
-* Observing real-time updates and reputation changes.
-
-Please refer to this guide for a comprehensive walkthrough of the project's functionality.
-
-## Contributing
-
-Contributions are welcome. Please feel free to submit a pull request.
-
-## License
-
-This project is licensed under the ISC License.
+This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
