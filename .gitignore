@@ -16,6 +16,7 @@ autonomix-contracts/cache/
 # production
 .env
 dist/
+.env.validator
 
 # misc
 .DS_Store
